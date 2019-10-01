@@ -10,11 +10,25 @@
                 <hr>
                     <div class="media">
                             <div class="d-flex flex-column vote-controls">
-                                <a href="" title="This question is useful" class="vote-up">
+                                <a href="" title="This answer is useful" 
+                                    class="vote-up {{Auth::guest()?'off':''}}"
+                                    onclick="event.preventDefault(); document.getElementById('up-vote-answer-{{$answer->id}}').submit();"
+                                    >
+                                    <form class="d-none" method="POST" action="{{ route('answers.vote', $answer->id) }}" id="up-vote-answer-{{ $answer->id }}">
+                                        @csrf
+                                        <input type="hidden" name="vote" value="1">
+                                    </form>
                                     <i class="fas fa-3x fa-caret-up"></i>
                                 </a>
-                                <span class="votes-count">12</span>
-                                <a href="" title="This question is not useful" class="vote-down off">
+                                <span class="votes-count">{{$answer->votes_count}}</span>
+                                <a href="" title="This answer is not useful"
+                                    class="vote-down {{Auth::guest()?'off':''}}"
+                                    onclick="event.preventDefault(); document.getElementById('down-vote-answer-{{$answer->id}}').submit();"
+                                    >
+                                    <form class="d-none" method="POST" action="{{ route('answers.vote', $answer->id) }}" id="down-vote-answer-{{ $answer->id }}">
+                                        @csrf
+                                        <input type="hidden" name="vote" value="-1">
+                                    </form>
                                     <i class="fas fa-3x fa-caret-down"></i>
                                 </a>
                                 @can('accept', $answer)
@@ -44,10 +58,10 @@
                                 <div class="col-4">
                                         <div class="ml-auto">
                                             @can ('update', $answer)
-                                            <a href=" {{ route('questions.answers.edit', [$question->id, $answer->id]) }} " class="btn btn-sm btn-outline-info">Edit</a>
+                                            <a href=" {{ route('questions.answers.edit', [$answer->id, $answer->id]) }} " class="btn btn-sm btn-outline-info">Edit</a>
                                             @endcan
                                             @can ('delete', $answer)
-                                            <form action=" {{ route('questions.answers.destroy', [$question->id, $answer->id]) }} " method="post" class="d-inline">
+                                            <form action=" {{ route('questions.answers.destroy', [$answer->id, $answer->id]) }} " method="post" class="d-inline">
                                                 {{ method_field('DELETE') }}
                                                 @csrf
                                                 <input type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')" value="Delete">
