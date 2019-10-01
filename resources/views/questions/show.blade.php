@@ -18,11 +18,25 @@
                     <hr>
                     <div class="media">
                         <div class="d-flex flex-column vote-controls">
-                            <a href="" title="This question is useful" class="vote-up">
+                            <a href="" title="This question is useful" 
+                                class="vote-up {{Auth::guest()?'off':''}}"
+                                onclick="event.preventDefault(); document.getElementById('up-vote-question-{{$question->id}}').submit();"
+                                >
+                                <form class="d-none" method="POST" action="{{ route('questions.vote', $question->id) }}" id="up-vote-question-{{ $question->id }}">
+                                    @csrf
+                                    <input type="hidden" name="vote" value="1">
+                                </form>
                                 <i class="fas fa-3x fa-caret-up"></i>
                             </a>
-                            <span class="votes-count">12</span>
-                            <a href="" title="This question is not useful" class="vote-down off">
+                            <span class="votes-count">{{$question->votes_count}}</span>
+                            <a href="" title="This question is not useful"
+                                class="vote-down {{Auth::guest()?'off':''}}"
+                                onclick="event.preventDefault(); document.getElementById('down-vote-question-{{$question->id}}').submit();"
+                                >
+                                <form class="d-none" method="POST" action="{{ route('questions.vote', $question->id) }}" id="down-vote-question-{{ $question->id }}">
+                                    @csrf
+                                    <input type="hidden" name="vote" value="-1">
+                                </form>
                                 <i class="fas fa-3x fa-caret-down"></i>
                             </a>
                             <a href="" title="Click to mark as favorite question (Click agin to undo)" 
